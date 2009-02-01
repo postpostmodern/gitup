@@ -1,12 +1,17 @@
 # Gitup!
 
-__Scenario:__ You are working on a simple web site. You make some changes to a bunch of files. You need to upload the changed files to the server. Who knows what files you've modified in the past few days? Well, git knows. Run `gitup --since="last wednesday"`, and you're done.
+__Scenario:__ You are working on a simple web site. You make some changes to a bunch of files. You need to upload the changed files to the server (just SFTP, no fancy deployment or anything). Who knows what files you've modified in the past few days? Well, git knows. Run `gitup --since="last wednesday"`, and you're done.
 
 # Installation
 
 Put gitup.rb somewhere and alias it as `gitup`.
 
 # Requirements
+
+* Mac OS X
+* Ruby (of course)
+* Git
+* [preferably] Transmit
 
 Gitup is a Ruby script. It is intended to work on __OS X in conjunction with Git and Transmit__ using Transmit's _Dock Send_ feature. You need Ruby installed to run it. If you don't use a Mac, Git and Transmit, Gitup probably won't do you much good.
 
