@@ -28,6 +28,8 @@ class Gitup
         @options<< arg.gsub(/=((.*\s)+.*)$/, '="\1"')
       end
     end
+    @git_dir = `git rev-parse --show-cdup`.strip
+    @ignore_file = @git_dir + '.gitupignore'
   end
 
   # Do the thing
@@ -65,6 +67,14 @@ class Gitup
       files.compact!
       # We don't want any files that have been deleted
       files.delete_if { |file| !File.exists?(file) }
+      # Exclude files matching .gitupignore
+      if File.exists?(@ignore_file)
+        @ignores = File.readlines(@ignore_file).collect { |line| line.strip }
+        @ignores.each do |ignore|
+          files.delete_if { |file| file.match(ignore) }
+        end
+      end
+      # Make the hash for the commit
       { :name => name, :files => files } unless name.nil? || files.nil? || files.empty?
     end.compact 
   end
@@ -101,18 +111,20 @@ class Gitup
     case input
     when 'l'
       list_files
-    when 'c'
+    when 'c', ''
       upload_files
-    else
+    when 'a'
       puts "  Aborted"
       exit
+    else
+      prompt
     end
   end
 
   # Sends files to Transmit
   def upload_files
     puts "Files sent to #{@application}!"
-    puts `open -ga '#{@application}' #{file_list.join(' ')}`
+    puts `open -ga '#{@application}' #{file_list.collect{|file| '"' + file + '"' }.join(' ')}`
   end
 
   # Displays the complete file list
