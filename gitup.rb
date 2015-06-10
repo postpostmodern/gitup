@@ -2,7 +2,7 @@
 
 class Gitup
   DEFAULT_APPLICATION = 'Transmit'
-  
+
   def initialize(argv)
     # Set default application
     @application = DEFAULT_APPLICATION
@@ -22,11 +22,12 @@ class Gitup
       @options = '-1'
     else
       # If any other options/arguments are given, just pass them on to git-log
-      @options = []
+      options_array = []
       argv.each do |arg|
         # Make sure options with a space are quoted
-        @options<< arg.gsub(/=((.*\s)+.*)$/, '="\1"')
+        options_array<< arg.gsub(/=((.*\s)+.*)$/, '="\1"')
       end
+      @options = options_array.join ' '
     end
     @git_dir = `git rev-parse --show-cdup`.strip
     @ignore_file = @git_dir + '.gitupignore'
@@ -49,6 +50,7 @@ class Gitup
 
   # Get the file list from git-log
   def git_log
+    puts "git log --name-status --relative --pretty=format:\">>> %h %s\" #{@options}"
     @git_log ||= `git log --name-status --relative --pretty=format:">>> %h %s" #{@options}`
   end
 
@@ -76,7 +78,7 @@ class Gitup
       end
       # Make the hash for the commit
       { :name => name, :files => files } unless name.nil? || files.nil? || files.empty?
-    end.compact 
+    end.compact
   end
 
   # Get the entire list of files
